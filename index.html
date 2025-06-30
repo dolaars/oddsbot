@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OddsBot</title>
+  <style>
+    body { font-family: Arial; text-align: center; }
+    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
+    input { padding: 5px; width: 200px; }
+    button { padding: 5px 10px; }
+  </style>
+</head>
+<body>
+  <h1>OddsBot: Sports Odds & Results</h1>
+  <div id="chat"></div>
+  <input type="text" id="message" placeholder="e.g., odds for Liverpool">
+  <button onclick="sendMessage()">Send</button>
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById('message').value;
+      const chat = document.getElementById('chat');
+      chat.innerHTML += `<p>You: ${input}</p>`;
+      try {
+        const response = await fetch('YOUR_N8N_WEBHOOK_URL', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: input })
+        });
+        const data = await response.json();
+        chat.innerHTML += `<p>OddsBot: ${data.reply}</p>`;
+        chat.scrollTop = chat.scrollHeight;
+      } catch (error) {
+        chat.innerHTML += `<p>OddsBot: Error, try again!</p>`;
+      }
+      document.getElementById('message').value = '';
+    }
+  </script>
+</body>
+</html>
